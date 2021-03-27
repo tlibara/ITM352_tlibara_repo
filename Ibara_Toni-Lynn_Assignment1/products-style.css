@@ -1,0 +1,46 @@
+/* General */  
+body {
+    width: 800px;
+    margin: 0 auto;
+}
+
+/* Typography */  
+h1, h2 {
+    text-align: left;
+}
+
+/* block styling */  
+div {
+    border: 5px solid white;
+    display: flex;
+}
+
+/* Form styling */  
+main {
+    display: flex;
+    flex-flow: nowrap;
+    justify-content: space-around;
+    background-image: none;
+    background-repeat: no-repeat;
+}
+
+/* Styling the products display */ 
+.item img {
+    width: 200px;
+    height: 200px;
+}
+img {
+    border: 1px solid #ddd;
+    /* Gray border */
+    border-radius: 10px;
+    /* Rounded border */
+    padding: 10px;
+    /* Some padding */
+    width: 150px;
+    /* Set a small width */
+}
+
+/* Add a hover effect (blue shadow) */
+img:hover {
+    box-shadow: 0 0 5px 1px black;
+}

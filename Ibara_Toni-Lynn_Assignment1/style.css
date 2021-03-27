@@ -1,0 +1,30 @@
+body {
+    width: 800px;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+div {
+    border: none;
+    display: flex;
+}
+main {
+    display: flex;
+    flex-flow: nowrap;
+    justify-content: space-around;
+    background-color: palegoldenrod;
+    background-repeat: no-repeat;
+}
+.item img {
+    width: 200px;
+    height: 200px;
+}
+
+img {
+    border: none;
+    padding: 10px;
+    width: 150px;
+}
