@@ -3,40 +3,42 @@
 
 <script>
   let params = (new URL(document.location)).searchParams;
-
-  function isNonNegInt(q, returnErrors = false) {
-        if(q=='') q=0;
-        var errors = []; // assume no errors at first
-        if (Number(q) != q) errors.push('Not a number!'); // Check if string is a number value
-        if (q < 0) errors.push('Negative value!'); // Check if it is non-negative
-        if (parseInt(q) != q) errors.push('Not an integer!'); // Check that it is an integer
-
-        return returnErrors ? errors : (errors.length == 0);
-    }
-
-  window.onload = function(){
-        if(params.has["purchasesubmit"]) {
-            if (isNonNegInt(params.get["purchasesubmit"])) {
-                document.body.innerHTML = (`Thank you for ordering ${params.get["purchasesubmit"]} things!`);
-            } else {
-                window.location.href= "products_display.html" + document.location.search;
+  let quantities = [];
+        // check that we have quantity
+        if(params.has('purchasesubmit')) {
+            // is the quantiy valid? If so, print purchase. If not, give error.
+            for (i=0; i < products.length; i++) {
+              if (params.has(`quantity${i}`)){
+                a_qty = params.get(`quantity${i}`); 
+                quantities[i] = a_qty;
+              }
             }
-    }}
+          } else{
+            document.write('Please enter a valid quantity');
+          }
+          console.log(quantities);
+
+  // function isNonNegInt(q, returnErrors = false) {
+        // if(q=='') q=0;
+        // var errors = []; // assume no errors at first
+        // if (Number(q) != q) errors.push('Not a number!'); // Check if string is a number value
+        // if (q < 0) errors.push('Negative value!'); // Check if it is non-negative
+        // if (parseInt(q) != q) errors.push('Not an integer!'); // Check that it is an integer
+
+        // return returnErrors ? errors : (errors.length == 0);
+    // }
+
+  // window.onload = function(){
+        // if(params.has ("purchasesubmit")) {
+            // if (isNonNegInt(params.get ("purchasesubmit"))) {
+                // document.body.innerHTML = (`Thank you for ordering ${params.get ("purchasesubmit")} things!`);
+            // } else {
+                // window.location.href= "products_display.html" + document.location.search;
+            // }
+    // }}
 
   
-  // let quantities = [];
-        // check that we have quantity
-        // if(params.has('purchasesubmit')) {
-            // is the quantiy valid? If so, print purchase. If not, give error.
-            // for (i=0; i < products.length; i++) {
-              // f (params.has(`quantity${i}`)){
-                // a_qty = params.get(`quantity${i}`); quantities[i] = a_qty;
-              // }
-            // }
-          // }else{
-            // document.write('Please enter a valid quantity');
-          // }
-          // console.log(quantities);
+  
           
           </script>
 
@@ -59,23 +61,39 @@
           </tr>
           <script>
             subtotal = 0
+           
 
-            function generate_item_rows (product_quantities_array){
+            // function generate_item_rows (product_quantities_array){
+            // for(i=0; i < product_quantities_array.length; i++){
+              // qty = product_quantities_array[i];
+              // if (qty== 0) continue;
+              // errors = isNonNegInt (qty, true);
+              // if (errors.length ==0) {
+              // var extended_price = products[i].price * qty;
+              // subtotal += extended_price;
+            // } 
+            // else {
+              // extended_price = "0"
+            // }
+            // }
+            // generate_item_rows(quantities)
+            
             for(i=0; i < products.length; i++){
-              if (quantities[i]> 0) continue;
-              extended_price = products[i].price * quantities[i];
+              a_qty = params.get(`quantity${i}`);
+              if (a_qty > 0) continue;
+              extended_price = products[i].price * a_qty;
               subtotal += extended_price;
-            } 
     
             document.write(`
             <tr>
               <td width="43%">${products[i].brand}</td>
-              <td align="center" width="11%">${quantities[i]}<br><font color ="red">${errors.join('<br>')}</font></td>
+              <td align="center" width="11%">${quantities[i]}</td>
               <td width="13%">\$${products[i].price}</td>
               <td width="54%">\$${extended_price}</td>
             </tr>
             `);
-    }
+            }
+            
   
           // Compute sales tax
             var tax_rate = 0.0575;
@@ -120,8 +138,8 @@
       <div><br>
         <b>
         OUR SHIPPING POLICY IS:A subtotal $0 - $49.99 will be $2 shipping
-        A subtotal $50 - $99.99 will be $5 shipping
-        Subtotals over $100 will be charged 5% of the subtotal amount </b> 
+        <br> Subtotal $50 - $99.99 will be $5 shipping
+        <br> Over $100 will be charged 5% of the subtotal amount </b> 
         </br></div>
 </body>
 </html>
