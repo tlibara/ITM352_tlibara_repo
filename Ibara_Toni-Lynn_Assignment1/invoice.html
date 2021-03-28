@@ -8,8 +8,8 @@
         if(params.has('purchasesubmit')) {
             // is the quantiy valid? If so, print purchase. If not, give error.
             for (i=0; i < products.length; i++) {
-              if (params.has(`quantity${i}`)){
-                a_qty = params.get(`quantity${i}`); 
+              if (params.has(`quantity_textbox`)) {
+                a_qty = params.get(`quantity_textbox`); 
                 quantities[i] = a_qty;
               }
             }
@@ -78,10 +78,9 @@
             // }
             // generate_item_rows(quantities)
             
-            for(i=0; i < products.length; i++){
-              a_qty = params.get(`quantity${i}`);
-              if (a_qty > 0) continue;
-              extended_price = products[i].price * a_qty;
+            for(i=0; i < products.length; i++) {
+              if (quantities[i] > 0) {
+              extended_price = quantities[i] * products[i].price;
               subtotal += extended_price;
     
             document.write(`
@@ -93,6 +92,7 @@
             </tr>
             `);
             }
+          }
             
   
           // Compute sales tax
