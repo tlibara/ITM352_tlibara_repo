@@ -2,54 +2,43 @@
 </script>
 
 <script>
-  var quantities = [];
-  var product_array = [];
-
-function generate_item_rows (product_quantities_array){
-  for(i=0; i < product_array.length; i++){
-    if (product_quantities_array[i] == 0) continue;
-    errors = isNonNegInt(product_quantities_array[i], true);
-    if (errors.length == 0){
-    extended_price = products[i].price * product_quantities_array[i];
-    subtotal += extended_price;
-    } 
-    else {
-      extended_price = "0"
-    }
-    document.write(`
-    <tr>
-      <td width="43%">${products[i].brand}</td>
-      <td align="center" width="11%">${product_quantities_array[i]}<br><font color ="red">${errors.join('<br>')}</font></td>
-      <td width="13%">\$${products[i].price}</td>
-      <td width="54%">\$${extended_price}</td>
-    </tr>
-    `);
-    }
-}
-
-function isNonNegInt(q,returnErrors=false) {
-    errors = []; // assume no errors at first
-    if(Number(q) != q) errors.push('Not a number!'); // Check if string is a number value
-    if(q < 0) errors.push('Negative value!'); // Check if it is non-negative
-    if(parseInt(q) != q) errors.push('Not an integer!'); // Check that it is an integer
-
-    return returnErrors ? errors : (errors.length == 0); 
-}
-
-window.onload = function () {
   let params = (new URL(document.location)).searchParams;
 
-        // check that we have quantity
-        if(params.get('quantity_textbox')) {
-            // is the quantiy valid? If so, print purchase. If not, give error.
-            if(isNonNegInt(params.has('quantity_textbox'))){
-                document.body.innerHTML = `Thank you for ordering ${params.get('quantity_textbox')} items`;
-            } else {
-                window.location.href = "products_display.html" + document.location.search;
-            }
-        }
+  function isNonNegInt(q, returnErrors = false) {
+        if(q=='') q=0;
+        var errors = []; // assume no errors at first
+        if (Number(q) != q) errors.push('Not a number!'); // Check if string is a number value
+        if (q < 0) errors.push('Negative value!'); // Check if it is non-negative
+        if (parseInt(q) != q) errors.push('Not an integer!'); // Check that it is an integer
+
+        return returnErrors ? errors : (errors.length == 0);
     }
-</script>
+
+  window.onload = function(){
+        if(params.has["purchasesubmit"]) {
+            if (isNonNegInt(params.get["purchasesubmit"])) {
+                document.body.innerHTML = (`Thank you for ordering ${params.get["purchasesubmit"]} things!`);
+            } else {
+                window.location.href= "products_display.html" + document.location.search;
+            }
+    }}
+
+  
+  // let quantities = [];
+        // check that we have quantity
+        // if(params.has('purchasesubmit')) {
+            // is the quantiy valid? If so, print purchase. If not, give error.
+            // for (i=0; i < products.length; i++) {
+              // f (params.has(`quantity${i}`)){
+                // a_qty = params.get(`quantity${i}`); quantities[i] = a_qty;
+              // }
+            // }
+          // }else{
+            // document.write('Please enter a valid quantity');
+          // }
+          // console.log(quantities);
+          
+          </script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -57,7 +46,7 @@ window.onload = function () {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Invoice</title>
 </head>
 <body>
     <table border="2">
@@ -70,10 +59,24 @@ window.onload = function () {
           </tr>
           <script>
             subtotal = 0
-            generate_item_rows(quantities)
-         
-            
-            
+
+            function generate_item_rows (product_quantities_array){
+            for(i=0; i < products.length; i++){
+              if (quantities[i]> 0) continue;
+              extended_price = products[i].price * quantities[i];
+              subtotal += extended_price;
+            } 
+    
+            document.write(`
+            <tr>
+              <td width="43%">${products[i].brand}</td>
+              <td align="center" width="11%">${quantities[i]}<br><font color ="red">${errors.join('<br>')}</font></td>
+              <td width="13%">\$${products[i].price}</td>
+              <td width="54%">\$${extended_price}</td>
+            </tr>
+            `);
+    }
+  
           // Compute sales tax
             var tax_rate = 0.0575;
             var tax = tax_rate * subtotal;
