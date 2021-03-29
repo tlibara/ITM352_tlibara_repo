@@ -1,0 +1,57 @@
+html, body{
+    font-family: 'Karma', sans-serif;
+    background-color: lightgray;
+    background-image: url(images/background.jpg);
+    background-repeat: repeat;
+    background-blend-mode:soft-light ;
+    font-size: 20;
+    line-height: 1;
+    margin: 50px 50px 50px 50px;
+    width: 100%;
+    display: flex;
+}
+body{
+    align-items: center;
+    columns:inherit;
+}
+table {
+    display: table;
+    border-collapse: separate;
+    background-color: whitesmoke;
+    align-content: center;
+    border-color: black;
+    margin: 0;
+}
+main{
+    table-layout: auto;
+    font-size: 30;
+}
+p {
+    text-align: center;
+    font-size: 25px;
+    font-weight:900 ;
+    background-color: whitesmoke;
+    width: auto;
+    border: 10px black;
+    padding: 50px;
+    margin: 20px;
+}
+  
+.card {
+    margin: 1em;
+    flex-basis: 100%;
+    max-width: 50%;
+  }
+.item img {
+    width: 400px;
+    height: 400px;
+}
+h3 {
+    font-size: 40px;
+    font-weight: bolder;
+}
+footer {
+    text-align: center;
+}
+
+
