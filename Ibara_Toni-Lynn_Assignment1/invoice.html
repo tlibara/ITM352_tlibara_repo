@@ -4,7 +4,7 @@
 <script>
   // Referenced from Professor Port's Assignment 1 examples
   let params = (new URL(document.location)).searchParams;
-  let quantities = []; // Check that we have quantities submitted
+  var quantities = []; // Check that we have quantities submitted
   if (params.has('purchasesubmit')) { // If everything is good, create a loop for every product
     for (i = 0; i < products.length; i++) {
       if (params.has(`quantity${i}`)) { // Checking if ...
