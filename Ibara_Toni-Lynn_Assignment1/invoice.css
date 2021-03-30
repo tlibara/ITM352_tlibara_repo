@@ -1,3 +1,4 @@
+/* General */  
 html, body{
     font-family: 'Karma', sans-serif;
     background-color: lightgray;
@@ -6,26 +7,33 @@ html, body{
     background-blend-mode:soft-light ;
     font-size: 20;
     line-height: 1;
-    margin: 50px 50px 50px 50px;
+    margin-left: auto;
+    margin-right: auto;
     width: 100%;
     display: flex;
 }
+/* General */  
 body{
     align-items: center;
     columns:inherit;
 }
+/* Table styling */
 table {
     display: table;
     border-collapse: separate;
     background-color: whitesmoke;
     align-content: center;
     border-color: black;
-    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
 }
+/* Form styling */
 main{
     table-layout: auto;
     font-size: 30;
+    margin: 0;
 }
+/* Typography for shipping policy */ 
 p {
     text-align: center;
     font-size: 25px;
@@ -36,20 +44,12 @@ p {
     padding: 50px;
     margin: 20px;
 }
-  
-.card {
-    margin: 1em;
-    flex-basis: 100%;
-    max-width: 50%;
-  }
-.item img {
-    width: 400px;
-    height: 400px;
-}
+/* Typography for shipping header*/ 
 h3 {
     font-size: 40px;
     font-weight: bolder;
 }
+/* Styling border */
 footer {
     text-align: center;
 }
