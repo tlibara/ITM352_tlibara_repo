@@ -1,0 +1,34 @@
+/* General */  
+html, body{
+    font-family: 'Karma', sans-serif;
+    background-color: lightgray;
+    background-image: url(images/background.jpg);
+    background-repeat: repeat;
+    background-blend-mode:soft-light ;
+    font-size: 20;
+    line-height: 1;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+h3 {
+    text-align: center;
+    font-size: 40px;
+    font-weight: normal;
+}
+form {
+    border: none;
+    width: 70%;
+    background-color: gainsboro;
+    align-items: center;
+    margin: auto;
+}
+
+.containerlogin{
+    text-align: center;
+    padding: 15px;
+}
+.containerregister {
+    text-align: center;
+}
