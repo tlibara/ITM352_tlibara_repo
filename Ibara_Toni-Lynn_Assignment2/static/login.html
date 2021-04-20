@@ -4,8 +4,8 @@
   let params = (new URL(document.location)).searchParams;
 
   window.onload = function() {
-    if (params.has('LogError')) {
-      alert ('FIX USERNAME OR PASSWORD');
+    if (params.has('LogError')) { // Notify user if there is an error with their username or password
+      alert ('FIX USERNAME OR PASSWORD'); 
     }
   }
 </script>
@@ -68,14 +68,15 @@
   <hr id="login">
  
   <script>
-    document.write(` <form action="processlogin${location.search}" name="login"  method="POST">`)
+    document.write(` <form action="processlogin${location.search}" name="login"  method="POST">`) 
+      // Referenced from Lab 14 login page
   </script>
     <br> 
 
     <h3>
       Log into our store!
     </h3>
-
+    <!-- Login Section, registered users can input their login information -->
     <div class="containerlogin">
       <label for="username"><b>USERNAME</b></label><br>
       <input type="text" name="username" size="30" placeholder="USERNAME" required><br><br>
@@ -85,7 +86,8 @@
 
       <button type="submit">LOGIN</button><br>
     </div>
-   </form> 
+   </form>
+  <!-- If they do not have an account, they can make one by clicking the 'register' link -->
    <form >
     <div class="containerregister">
       <input type="button" name="register" value="REGISTER" onclick="window.location='./register.html' + document.location.search">
@@ -95,7 +97,7 @@
     
   
     <script>
-      login.action += document.location.search;
+      login.action += document.location.search; // Will save the products in the query string to user in the invoice page
     </script>
     <script>
       // Script to open and close sidebar

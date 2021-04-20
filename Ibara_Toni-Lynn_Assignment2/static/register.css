@@ -11,12 +11,13 @@ html, body{
     margin-right: auto;
     width: 100%;
 }
-
+/* General*/
 h2 {
     text-align: center;
     font-size: 40px;
     font-weight: normal;
 }
+/* Form styling */
 form {
     border: none;
     width: 70%;
@@ -24,12 +25,12 @@ form {
     align-items: center;
     margin: auto;
 }
-
+/* Alignment for the information inputted */
 .registration{
     text-align: center;
     padding: 15px;
 }
-
+/* Alignment for the information inputted */
 .containerlogin {
     text-align: center;
 }
