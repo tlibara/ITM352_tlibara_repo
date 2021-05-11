@@ -137,5 +137,5 @@ var allproducts = {
 }
 
 if (typeof module != 'undefined') { 
-    module.exports.products = products;
+    module.exports.allproducts = allproducts;
 }

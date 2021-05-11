@@ -48,8 +48,8 @@ var transporter = nodemailer.createTransport({
     }
 });
 var mailOptions = {
-    //sender is markushiroda@gmail.com
-    from: 'markushiroda@gmail.com', 
+    //sender is tlibara@gmail.com
+    from: 'tlibara@gmail.com', 
     //email from the cookie from cart.html
     to: email, 
     subject: 'Invoice',
