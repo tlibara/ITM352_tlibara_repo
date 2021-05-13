@@ -1,180 +1,75 @@
 var express = require('express'); // loads the express module
 var app = express(); // sets and starts the app module
 var myParser = require("body-parser"); // loads the bpdy-parser module
-var data = require('./static/products_data.js'); // Links the products page file and sets the the variable to 'data
-const qs = require('qs'); // makes qs as the loaded query string module
-var allproducts = data.allproducts; // loads the products page to the variable 'products'
+var productdata = require('./static/products_data.js'); // Links the products page file and sets the the variable to 'data
+//var allproducts = data.allproducts; // loads the products page to the variable 'products'
 var filedata = './user_data.json'; // new variable to the user data file 
 var fs = require('fs'); // loads the file system
-const { request } = require('express');
-app.use(myParser.urlencoded({ extended: true })); // get the data in the body
-var userdatafile = fs.readFileSync(filedata, 'utf-8'); // open data file and assign from userdata to a string variable
-userdata =JSON.parse(userdatafile);
-var session = require('express-session'); // require express-session module to transfer data to the body
-const nodemailer = require("nodemailer"); // require the node mailer module
-var cookieParser = require('cookie-parser'); // require cookie parser and the session variable is set for the session module
-app.use(cookieParser()); // use cookie-parser middleware
 
+//userdata =JSON.parse(userdatafile);
+var session = require('express-session'); // require express-session module to transfer data to the body
+var cookieParser = require('cookie-parser'); // require cookie parser and the session variable is set for the session module
+
+const qs = require('qs'); // makes qs as the loaded query string module
+const { request } = require('express');
+const nodemailer = require("nodemailer"); // require the node mailer module
+//const { send } = require('process');
+
+app.use(cookieParser()); // use cookie-parser middleware
+app.use(myParser.urlencoded({ extended: true })); // get the data in the body
+app.use(session({secret: "ITM352 rocks!"})); // sets up the use of sessions automatically
+app.use(myParser.json());
+
+
+if (fs.existsSync(filedata)) {
+    var filestats = fs.statSync(filedata); // gets the stats from the file
+   // var userdata = JSON.parse(fs.readFileSync(userdatafile,'utf-8'));
+    console.log(`user_data.json has ${filestats["size"]} characters`); // outputs the characters of the data file
+
+    var userdatafile = fs.readFileSync(filedata, 'utf-8'); // open data file and assign from userdata to a string variable
+    userregdata = JSON.parse(userdatafile)
+} 
 
 app.all('*', function (req, res, next) { // for all the request methods
     console.log(req.method + ' to ' + req.path); // how the request method gets written in the console and path
     next(); // continue on
 
-
-
-app.get("/get_cart", function (req, res) {
-    res.json(req.session.cart);
-});
-
-
-
-if (fs.existsSync(filedata)) {
-    var filestats = fs.statSync(filedata); // gets the stats from the file
-    var userdata = JSON.parse(fs.readFileSync(userdatafile,'utf-8'));
-    console.log(`${userdatafile} has ${filestats["size"]} characters`); // outputs the characters of the data file
-} else {
-    console.log(`${userdatafile} does not exist :(`)
-}
-
-
-});
-
-var transporter = nodemailer.createTransport({ 
-    host: 'mail.hawaii.edu', //hawaii.edu USE HAWAII EMAIL
-    port: 25,
-    secure: false,
-    tls: {
-        rejectUnauthorized: false
-    }
-});
-var mailOptions = {
-    //sender is tlibara@gmail.com
-    from: 'tlibara@gmail.com', 
-    //email from the cookie from cart.html
-    to: email, 
-    subject: 'Invoice',
-    //return as html in the body of the email
-    html: str 
-};
-
-transporter.sendMail(mailOptions, function (error, info) {
-    //if errors, sent to console
-    if (error) {
-        console.log(error);
-    //notify me if email sent properly
-    } else { 
-        console.log('Email sent: ' + info.response);
-    }
-});
-
-// string gets displayed in browser
-response.send(str);
-
-
-//The following was taken from stormpath.com and Lab15 ex4.js
-app.use(session({
-//random string to encrypt session ID
-secret: 'eg[isfd-8yF9-7w2315df{}+Ijsli;;to8',
-//save session
-resave: true, 
-//forget session after user is done
-saveUninitialized: false,
-//allows browser js from accessing cookies
-httpOnly: false, 
-//ensures cookies are only used over HTTPS
-secure: true,
-// deletes cookie when browser is closed
-ephemeral: true 
-}));
-
-
-// Referenced and modified from Lab 14
-app.POST('/process_form', function (req, res) {
-    let POST = req.body; // create a variable
-    console.log(POST);
-    if(typeof POST ['addProducts${i}'] !='undefined') {
-        var validquantities = true; // assumes the values are true and has valid quantities
-        var hasquantities = false
-        for (i=0; i < `${(products_array[`brand`][i])}`.length; i++) {
-            qty = POST[`quantity_textbox${i}`];
-            if (qty > 0) {
-                hasquantities = true;
+app.post("/processlogin", function (req, res) {
+    POST = req.body;
+    if (typeof userregdata[req.body.username] != 'undefined') {
+        if (req.body.password == userregdata[req.body.username].password){
+            if (typeof req.session.login === 'undefined') {
+                req.session.login = {};
             }
-            if (isNonNegInt(qty) == false) {
-                validquantities = false;
+            if (typeof req.session.login.username == 'undefined') {
+                req.session.login.username = [POST.username];
             }
-        }
+            if (typeof req.session.login.password == 'undefined') {
+                req.session.login.password = [POST.password]
+            }
+            console.log(req.session);
+            
+            var useremail = userregdata[req.body.username].email;
 
-    const stringified = qs.stringify(POST); // generate invoice if all the quantities are valid
-    if (validquantities && hasquantities) {
-        res.redirect("./login.html?" + stringified); // direct to login page with the query string of the order quantities
+            res.cookie('username', POST.username);
+            res.cookies('email', useremail);
+            res.redirect("./login.html");
+
+        } else {
+            res.send (`OH NO, INCORRECT PASSWORD`)
+        } 
     } else {
-        res.redirect("./products_display.html?" + stringified)
-        }
-    }
-});
-
-// repeats the function from the products_display.html to create a relation between the two pages
-function isNonNegInt(q, returnErrors = false) {
-    if(q=='') q=0;
-    var errors = []; // assume no errors at first
-    if (Number(q) != q) errors.push('NOT A NUMBER!'); // Check if string is a number value
-    if (q < 0) errors.push('NEGATIVE VALUE!'); // Check if it is non-negative
-    if (parseInt(q) != q) errors.push('NOT AN INTEGER!'); // Check that it is an integer
-
-    return returnErrors ? errors : (errors.length == 0);
-}
-
-// login page server side starts now
-app.post("/check_login", function (req,res) {
-    errs=[];
-    //console.log(req.query);
-    var loginusername = req.body["username"];
-    var userinfo = userdata[loginusername];
-    var loginpassword = req.body["password"];
-
-    if (typeof userdata[loginusername] !='undefined' || userdata[loginusername == '']) { // if the object does not have a matching username, it will be undefined
-        errs.username = ('OH NO, USERNAME INCORRECT!');
-        errs.password = ('OH NO, PASSWORD INCORRECT!');
-    } else if (userinfo['password'] != loginpassword) {
-        errs.username = '';
-        errs.password = ('OH NO, PASSWORD INCORRECT!');
-    } else {
-        delete errs.username;
-        delete errs.password;
-    };
-    if (Object.keys(errs).length == 0) { 
-        //the following was taken from Lab15 ex4.js
-        //add username to user's session
-        session.username = loginusername 
-        //sets the time of login
-        var theDate = Date.now();
-        //remember this login time in session
-        session.last_login_time = theDate;
-        //set login name to the name saved for user
-        var login_name = userinfo['name'];
-        //set email to the email saved for user
-        var user_email = userinfo['email'];
-        //gives username in cookie
-        res.cookie('username', login_username)
-        //gives name in cookies
-        res.cookie('name', login_name)
-        //gives a cookie to user
-        res.cookie('email', user_email);
-        //give response parsed as json object
-        res.json({});
-    } else {
-        //otherwise, show error message
-        res.json(errs);
-    };
-
+        res.send(`OH NO, ${filedata} DOES NOT EXIST!`);
+    } 
 });
 
 // Registration Page server side starts now
-app.post('/register_user', function(req, res) {
-    errs = {};
+app.post('/processregistration', function(req, res) {
+    let POST = req.body;
+    var errs = [];
     var registeredusername = req.body["username"];
     var registeredname = req.body["name"];
+
     if (registeredusername =='') {
         errs.username ='PLEASE ENTER A USERNAME';
     } else if (registeredusername.length < 4 || registeredusername.length > 10) {
@@ -228,10 +123,149 @@ app.post('/register_user', function(req, res) {
     }
 });
 
+app.post("/add_to_cart", function (req, res) {
+    
+    var POST = req.body
+    console.log(POST);
+
+    //check if quantity is valid, if so add to session, otherwise return error
+    
+    has_errors = false;
+    qty = POST[`quantity`];
+    if (qty != '' && isNonNegIntString(qty) == true) {
+
+
+        if (has_errors == false) {
+            if (typeof req.session.cart == 'undefined') {
+                req.session.cart = {};
+            }
+            if (typeof req.session.cart[POST.product] == 'undefined') {
+                req.session.cart[POST.product] = [];
+            }
+            req.session.cart[POST.product][POST.product_index] = Number.parseInt(POST.quantity);
+            response_msg = `Added ${POST.quantity} to your cart!`;
+        }
+        response_msg = `Added ${POST.quantity} to your cart!`;
+        console.log(request.session);
+        res.json({"message":response_msg});
+
+} else {
+
+        has_errors = true;
+        console.log("errors");
+        ;
+        
+    };
+   
+    
+});
+
+app.post("/get_cart_data", function (req, res) {
+    if (typeof req.session.cart == 'undefined') {
+        req.session.cart = {};
+    }
+    res.json(req.session.cart);
+});
+
+app.post("/get_login_data", function (req, res) {
+    if (typeof req.session.login == 'undefined') {
+        req.session.login = {};
+        console.log(req.session.login)
+    }
+    res.json(req.session.login);
+
+});
+
+app.post("/generateinvoice", function (req, res) {
+    console.log(req.session.cart);
+
+    if (typeof req.session.login == 'undefined') {
+        alertstr = `<script> alert("LOGIN OR REGISTER!");
+                        window.history.back() </script>`;
+
+            res.send(alertstr);
+           
+        
+    }
+    res.redirect("./invoice.html")
+});
+
+app.post("/completeorder", function (req, res) {
+    var useremail = request.cookies.email;
+    var invoicestr = `THANK YOU ${useremail} FOR PURCHASING MAKEUP FROM OUR STORE`;
+
+    var shoppingcart = req.session.cart;
+    for(product in productdata) {
+        for(i = 0; i < productdata[product].length; i++) {
+            if(typeof shoppingcart[product] == 'undefined') continue;
+            qty = shoppingcart[product][i];
+            if(qty > 0) {
+              invoicestr += `<tr><td>${qty}</td><td>${productdata[product][i].name}</td><tr>`;
+            }
+        }
+    }
+      invoicestr += '</table>';
+
+    var transporter = nodemailer.createTransport({ 
+        host: 'mail.hawaii.edu', //hawaii.edu USE HAWAII EMAIL
+        port: 25,
+        secure: false,
+        tls: {
+            rejectUnauthorized: false
+        }
+    });
+
+    var useremail = req.cookies.email
+    console.log(useremail);
+    var mailOptions = {
+        from: 'tlibara@hawaii.edu', 
+        to: useremail, 
+        subject: 'Invoice',
+        html: invoicestr 
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            invoicestr += 'ERROR, INVOICE COULD NOT BE SENT';
+        } else { 
+            invoicestr += `YAY, INVOICE WAS SENT TO ${useremail}`;
+        }
+        res.send (invoicestr);
+    });
+})
+
+app.post('/logout', function (req, res) {
+    req.session.destroy();
+    res.clearCookie("username");
+    res.clearCookie("email");
+    res.redirect ('/index.html');
+});
+
+// repeats the function from the products_display.html to create a relation between the two pages
+function isNonNegInt(q, returnErrors = false) {
+    if(q=='') q=0;
+    var errors = []; // assume no errors at first
+    if (Number(q) != q) errors.push('NOT A NUMBER!'); // Check if string is a number value
+    if (q < 0) errors.push('NEGATIVE VALUE!'); // Check if it is non-negative
+    if (parseInt(q) != q) errors.push('NOT AN INTEGER!'); // Check that it is an integer
+
+    return returnErrors ? errors : (errors.length == 0);
+}
+// Referenced from Professor Port's Assignment 1 examples
+function checkQuantityTextbox(theTextbox) { // Checks the textbox from the isNonNegInt function
+    errs = isNonNegInt(theTextbox.value, true); // Refers to the isNonNegInt function to see if true or false
+    if (errs.length == 0) errs = ['Quantity']; // Adjusts the quantity to the customers request
+    if (theTextbox.value.trim() == '') errs = ['Quantity'];
+    document.getElementById(theTextbox.name + 'label').innerHTML = errs.join(", ");
+  }
+  
+
+
+
     
 
 
 
 
 app.use(express.static('./static')); // creates static server using express from the static folder
-app.listen(8080, () => console.log(`listening on port 8080`));
+app.listen(8080, () => console.log(`listening on port 8080`))});

@@ -1,0 +1,272 @@
+<script src="products_data.js" type="text/javascript"> //imports products from file
+</script>
+<script>
+  var products_array = "products_data.js"
+</script>
+<script>
+
+  let params = (new URL(document.location)).searchParams;
+  var product_type = params.get("pkey");
+
+  window.onload = function () {
+    if (typeof cart_data[product_type] != "undefined") {
+      for (i in cart_data[product_type]) {
+        document.getElementById(`quantity${i}`).value = cart_data[product_type][i];
+      }
+    }
+  };
+
+  // Referenced from Professor Port's Assignment 1 examples
+  function checkQuantityTextbox(theTextbox) { // Checks the textbox from the isNonNegInt function
+    errs = isNonNegInt(theTextbox.value, true); // Refers to the isNonNegInt function to see if true or false
+    if (errs.length == 0) errs = ['Quantity']; // Adjusts the quantity to the customers request
+    if (theTextbox.value.trim() == '') errs = ['Quantity'];
+    document.getElementById(theTextbox.id + '_label').innerHTML = errs.join(", ");
+  }
+
+  // Referenced from Lab 11
+  function isNonNegInt(q, return_errors = false) {
+    errors = []; // assume no errors at first
+    if (q == '') q = 0; // puts blank inputs to a quantity of 0
+    if (Number(q) != q) errors.push('<font color="red"> NOT A NUMBER!</font>'); // Check if string is a number value
+    else if (q < 0) errors.push('<font color="red">NEGATIVE VALUE!</font>'); // Check if it is non-negative
+    else if (parseInt(q) != q) errors.push('<font color="red">NOT AN INTEGER!</font>'); // Check that it is an integer
+    return return_errors ? errors : (errors.length == 0);
+  }
+
+  
+
+  function getCookie(name = '') {
+    let cookies = document.cookie;
+    let cookiestore = {};
+
+    cookies = cookies.split(";");
+
+    if (cookies[0] == "" & cookies[0][0] == undefined) {
+      return undefined;
+    }
+    cookies.forEach(function(cookie) {
+      cookie = cookie.split(/=(.+)/);
+      if (cookie[0].substr(0, 1) == ' ') {
+        cookie[0] = cookie[0].substr(1);
+      }
+      cookiestore[cookie[0]] = cookie[1];
+    });
+    return (name !=='' ? cookiestore[name] : cookiestore);
+  }
+  
+  
+  function savetocart (index) {
+    var productdata = {};
+    productdata.product_type = product_type;
+    productdata.product_index = index;
+    productdata.quantity = document.getElementById('quantity' + index).value;
+    if (typeof cart_data[product_type] == "undefined" ){
+      cart_data[product_type] =[];
+    }
+    if (typeof cart_data[product_type][index] == "undefined") {
+      cart_data[product_type][index] = 0;
+    }
+    document.getElementById('quantity' + index).value = parseInt(document.getElementById('quantity' + index).value) + cart_data[product_type][index];
+    console.log(
+      productdata
+    )
+    fetch('addtocart', {
+      method: 'POST',
+      body: new URLSearchParams(
+        productdata
+      )
+    }).then(res => res.text())
+      .then((res) => {
+        alert(res);
+
+      })
+      .catch(err => console.log(err))
+
+  }
+  //Our Json Callback function
+  function loadJSON(service, callback) {
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open('POST', service, false);
+    xobj.onreadystatechange = function () {
+      if (xobj.readyState == 4 && xobj.status == "200") {
+        // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+        callback(xobj.responseText);
+      }
+    };
+    xobj.send(null);
+  }
+  var cart_data = {};
+  loadJSON('loadcart', function (res) {
+    cart_data = JSON.parse(res);
+  });
+  console.log(cart_data);
+  //variables to store our cookie data to edit
+  var cookieToEdit = getCookie('username');
+  var x = cookieToEdit.replace('username=', '');
+  var display = x.replace('%20', ' ');
+
+
+</script>
+
+<!DOCTYPE html>
+<html>
+<title>MAKEUP Store</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+<link rel="stylesheet" href="products_display.css">
+
+<!--Borrowed style and portion of template from W3 Schools Food Blog template-->
+<style>
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Karma", sans-serif
+  }
+
+  .w3-bar-block .w3-bar-item {
+    padding: 20px
+  }
+</style>
+
+<body>
+
+  <!--Start a form to collect the customer's data that will be submitted and inputted into their invoice-->
+  <form name="productselection" action="process_form" method="POST">
+
+    <!--Name of Store and at the top of the page-->
+    <header>
+      <div style="text-align: center;">
+        <h1>TONI'S MAKEUP STORE</h1>
+      </div>
+    </header>
+
+    <!-- Sidebar (hidden by default), it will also navigate throughout the page -->
+    <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left"
+      style="display:none;z-index:2;width:40%;min-width:300px" id="mySidebar">
+      <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button">CLOSE MENU</a>
+      <script>
+        for (let ptype in products) {
+          document.write(`<a href="./products_display.html?pkey=${ptype}" onclick="w3_close()" class="w3-bar-item w3-button">${ptype}</a>`)
+        }
+      </script>
+      <script>
+        if (getCookie('username') == undefined) {
+          document.write(`<a href="login.html" onclick="w3_close()" class="w3-bar-item w3-button">SHOPPING CART</a>`);
+        } else {
+          document.write(`<a href="cart.html" onclick="w3_close()" class="w3-bar-item w3-button">SHOPPING CART</a>`)
+        }
+      </script>
+      
+      <!--If the cookie is undefined show login else show the username with logout functionallity that redirects the user to index and logs out the user-->
+      <script>
+        if (getCookie('username') == undefined) {
+          document.write(`<a href="login.html" onclick="w3_close()" class="w3-bar-item w3-button">LOGIN</a>`);
+        } else {
+          document.write(`<a href="logout" onclick="w3_close()" class="w3-bar-item w3-button">LOGOUT ${getCookie('username')}</a>`)
+        }
+      </script>
+      <!--If the cookie is undefined show the register else show nothing-->
+      <script>
+        if (getCookie('username') == undefined) {
+          <a href="Register.html" onclick="w3_close()" class="w3-bar-item w3-button">Register</a>
+        } else {
+          <a href=" " onclick="w3_close()" class="w3-bar-item w3-button"></a>
+        }
+      </script>
+    </nav>
+
+    <!-- Top menu, includes the navigation sidebar to click on, describes the page, and purchase button to submit the inputted data -->
+    <div class="w3-bar-item">
+      <div class="w3-white w3-xlarge" style="max-width:1200px;margin:auto">
+        <div class="w3-button w3-padding-16 w3-left" onclick="w3_open()">☰</div>
+        <div class="w3-right w3-padding-16">ITM352</div>
+        <div class="w3-center w3-padding-16">INFLUENCER EDITITION</div>
+      </div>
+    </div>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
+      <!-- About the website -->
+      <p>Welcome to Toni's Makeup Store where you can find different eyeshadow pallettes created by your favorite
+        influencers.
+        The featured influencers are Kylie Jenner, Kim Kardashian West, Jeffree Star, and Selena Gomez. Some are
+        world known
+        youtube makeup artists while the others are reality TV stars who now have a successful self-owned makeup
+        company. I hope
+        you enjoy everything we have to offer! Happy Shopping!
+      </p>
+      <main>
+        <span id="name_display" class="name_display">
+          <script>
+            if (getCookie('username') != undefined) {
+              document.getElementById('name_display').innerHTML = `WELCOME ${display}!`;
+            } else {
+              document.getElementById('name_display').innerHTML = "HELLO, PLEASE LOGIN!";
+            };
+          </script>
+          <br><br><br><br>
+        <!-- First Photo Grid-->
+        <div class="w3-container">
+        <script>
+             
+            for (i = 0; i < products[product_type].length; i++) {// generates products
+                document.write(`
+                  
+                  <h2 id =name${i} >${products[product_type][i].name}</h2>
+                  <img src="${products[product_type][i].image}" alt=${products[product_type][i].name} style=width="200" height="200" float:left> 
+                  <h2 id = price${i}>$${products[product_type][i].price}</2><br>
+                  <span id="quantity${i}_span"}"></span>
+                  <label id="quantity${i}_label"}">Quantity</label> <br>
+                  <input type="text" placeholder="0" id="quantity${i}" name="textbox${i}" onkeyup="checkQuantityTextbox(this);"><br>
+                  <input type="button"  name= "add to cart" value="ADD TO CART" onclick="savetocart(${i});"> <br><br><br>
+                          
+                        `);
+                      
+                    }    
+             
+                </script>
+          
+          </div>
+        </div>
+        <div class="w3-container w3-padding-32 w3-center">
+          <br><br>
+         
+      </main>
+
+      <!-- Footer -->
+      <hr id="shipping">
+      <footer class="w3-row-padding w3-padding-32">
+        <!-- Describe the shipping policy of the store-->
+        <div class="w3-row-padding w3-padding-16 w3-center" id="shipping"></div>
+        <h3>Shipping Policy</h3>
+        <p>OUR SHIPPING POLICY IS: A subtotal of $0 - 99.99 will be $5 shipping, subtotal of $100 - $199.99 will be $5
+          shipping, and over $200 will be charged 4% of the subtotal amount. </p>
+      </footer>
+
+
+
+      <!-- End page content -->
+    </div>
+
+    <script>
+      // Script to open and close sidebar
+      function w3_open() {
+        document.getElementById("mySidebar").style.display = "block";
+      }
+
+      function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+      }
+    </script>
+  </form>
+</body>
+
+</html>

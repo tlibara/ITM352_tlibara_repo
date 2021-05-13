@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>
+  <!--<script>
     // Referenced Lab 14 code
     let params = (new URL(document.location)).searchParams;
     // Alert the user if there is an error with the information inputted
@@ -11,7 +11,7 @@
         alert('Fix the following errors: \n' + params.get('errors'));
       }
     }
-  </script>
+  </script>-->
   <title>Register</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -62,8 +62,22 @@
     </div>
   </div>
   <br>
+  <script>
+    // got this function from stack overflow https://stackoverflow.com/questions/10730362/get-cookie-by-name
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+            
+            if (typeof getCookie('username') != 'undefined') {
+        console.log('working');
+      document.getElementById('logged_in').innerHTML = "Welcome" + ' ' + getCookie('username')
+    }
+           
+</script>
   <!-- Registration page, new users can input their information to make an account to get the invoice page-->
-  <form name="registrationform" action="javascript:register_user();" method="GET">
+  <form name="registrationform" action="process_registration" method="POST">
     <hr id="register">
     <h2>
       Become apart of the family!
@@ -86,13 +100,13 @@
       <input type="password" name="repeatpassword" size="30" pattern=".{6,}" placeholder="REPEAT PASSWORD" required title="MUST BE MATCHING"><br><br>
 
       <h3>BY CREATING THIS ACCOUNT, YOU AGREE TO OUR TERMS AND CONDITIONS!</h3>
-      <input class="loginbutton" type="submit" value="REGISTER" name="register">
+      <input id="submit" type="submit" value="REGISTER" name="register">
     </div>
     </form>
     <!-- If they already have an account, they can go back to the login page to login-->
     <form >
       <div class="containerlogin">
-        <input type="button" name="Login" value="RETURNING" onclick="window.location='./Login.html' + document.location.search">
+        <input type="submit" name="Login" value="RETURNING" onclick="window.location='./Login.html' + document.location.search">
       </div>
       </form>
     
@@ -100,7 +114,7 @@
         // Will save the products in the query string to user in the invoice page
         Register.action += document.location.search;
     </script>
-    <script>
+    <!--<script>
       function setCookie(cname, cvalue, exdays) {
         var date = new Date();
         date.setTime(date.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -136,7 +150,7 @@
       function register_user() { 
             data = new URLSearchParams(new FormData(registrationform)); 
 
-            fetch('/register)user', 
+            fetch('/register_user', 
                 {
                     method: 'post',
                     body: data,
@@ -174,7 +188,7 @@
 
             });
         }
-    </script>
+    </script>-->
     <script>
       // Script to open and close sidebar
       function w3_open() {

@@ -1,4 +1,4 @@
-<script src="./products_data.js" type="text/javascript">/* This is an invoice form for the products purchased*/
+<!--<script src="./products_data.js" type="text/javascript">/* This is an invoice form for the products purchased*/
 </script>
 <script>
   let params = (new URL(document.location)).searchParams;
@@ -8,6 +8,36 @@
       alert ('FIX USERNAME OR PASSWORD'); 
     }
   }
+</script>-->
+
+<script>
+
+  // Example POST method implementation:
+async function postData(url = '', data = {}) {
+  
+// Default options are marked with *
+const response = await fetch(url, {
+  method: 'POST', // *GET, POST, PUT, DELETE, etc.
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data) // body data type must match "Content-Type" header
+});
+return response.json(); // parses JSON response into native JavaScript objects
+}
+
+function add_to_login() {
+  postData('./process_login', { 'username':document.getElementById('username').value, 'password': document.getElementById('password').value})
+.then(data => {
+  console.log(data);
+  document.getElementById('logged_in').innerHTML = data;
+
+});
+
+
+
+}
 </script>
 
 <!DOCTYPE html>
@@ -66,8 +96,23 @@
  
   
   <hr id="login">
+  <script>
+    // got this function from stack overflow https://stackoverflow.com/questions/10730362/get-cookie-by-name
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+
+            if (typeof getCookie('username') != 'undefined') {
+                  console.log('working');
+                document.getElementById('logged_in').innerHTML = "Welcome" + ' ' + getCookie('username')
+              }
+
+           
+</script>
  
- <form name="loginform" action="javascript:login_user();"  method="GET">
+ <form name="loginform" action="processlogin"  method="POST">
     
   
     <br> 
@@ -98,7 +143,7 @@
       login.action += document.location.search; // Will save the products in the query string to user in the invoice page
     </script>
 
-    <script>
+    <!--<script>
       function setCookie(cname, cvalue, exdays) {
         var date = new Date();
         date.setTime(date.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -153,7 +198,7 @@
 
             });
         }
-    </script>
+    </script>-->
     <script>
       // Script to open and close sidebar
       function w3_open() {
