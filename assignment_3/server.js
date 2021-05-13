@@ -137,12 +137,14 @@ app.post("/loadcart", function (req, res) {
     res.json(req.session.cart)
 });
 
+
+
 app.get("/logout", function (req, res) {
-    res.clearCookie('username');
-    str = `<script>alert ("${req.cookies['username']} is logged out); location.href = "./index.html"; </script>`;
-    res.send(str);
-    req.session.destroy();
-    res.redirect('./index.html?pkey=Ficus');
+    res.clearCookie('username');//clears the cookie of username that we requested from the server when logging in or registering
+    str = `<script>alert("${req.cookies['username']} is logged out"); location.href="./index.html";</script>`; //save the script value of the user is logged out and redirect to a variable to so when the user logs out it will run this script to logout and redirect
+    res.send(str); //sends the variable
+    req.session.destroy(); // finally destroys session with cart info if use had items in card and cookie
+
 });
 
 app.post("/process_login", function (req, res) {
@@ -222,19 +224,18 @@ app.post("/checkout", function (request, response) {
             rejectUnauthorized: false
         }
     });
-    var user_email = 'makeup@makeup.com';
+    var user_email = user_data["email"];
     var mailOptions = {
-        from: 'makeup@makeup.com',
+        from: 'tlibara@hawaii.edu',
         to: user_email,
-        subject: 'THANKS FOR YOUR PURCHASE',
+        subject: 'INVOICE',
         html: invoice_str
     };
-
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
-            invoice_str += 'OH NO, SOMEETHING WENT WRONG';
+            invoice_str += 'OH NO, SOMETHING WENT WRONG';
         } else {
-            invoice_str += 'INVOICE SENT, THANK YOU FOR SHOPPING WITH US!';
+            invoice_str += 'EMAIL WAS SENT, THANK YOU FOR SHOOPING WITH US!';
         }
         request.session.destroy(); //destroys session
         response.send(invoice_str);

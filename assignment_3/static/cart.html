@@ -132,11 +132,13 @@
             let qty = cart_data[ptype][i];
             if (qty > 0) {
               var extended_price = qty * products[ptype][i].price;
-              subtotal = extended_price + subtotal;
+              subtotal += extended_price;
               invoicestr += `
         <tr>
           <td align="center"width="43%">${products[ptype][i].name}</td>
-          <td align="center" width="11%">${qty}</td>
+          <td align="center" width="11%">
+          <input type="text" onchange="cart_data"['${ptype}'][${i}]=this.value" name="qty[${i}]" value="${cart_data[ptype][i]}" min="0">
+          </td>
           <td align="center"width="13%">\$${products[ptype][i].price}</td>
           <td align="center"width="54%">\$${extended_price}</td>
         </tr>
@@ -198,6 +200,7 @@
       `;
         document.write(invoicestr);
       </script>
+<input type="submit" value="Update Cart" name="Update" >
 
       
     </main>
@@ -212,12 +215,12 @@
         shipping, and over $200 will be charged 4% of the subtotal amount. </p>
     </footer>
 
-    <form action="/checkout" method="POST">
-      Email Address: <input type="email" name="email"><input type="submit" value="CHECKOUT">
+    <form action="/checkout" method=POST>
       <script>
         document.write(`<input name="invoicestring" type="hidden" value="${encodeURI(invoicestr)}">`);
       </script>
       <div class="w3-main w3-content w3-padding" style="text-align: center;">
+        <button type="submit" name="purchasesubmit">Checkout!</button>
     </form>
     
 
