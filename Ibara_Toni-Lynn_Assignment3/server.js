@@ -242,7 +242,7 @@ app.post("/checkout", function (req, res) {
         if (error) {
             invoice_str += 'OH NO, SOMETHING WENT WRONG';
         } else {
-            invoice_str += 'EMAIL WAS SENT, THANK YOU FOR SHOOPING WITH US!';
+            invoice_str += 'EMAIL WAS SENT, THANK YOU FOR SHOPPING WITH US!';
         }
         req.session.destroy(); //destroys session
         res.send(invoice_str);
