@@ -1,3 +1,6 @@
+<!-- Author: Toni-Lynn Ibara -->
+<!-- Date: 5-14-2021 -->
+<!-- Products file -->
 <script src="products_data.js" type="text/javascript"> //imports products from file
 </script>
 <script>
@@ -5,8 +8,8 @@
 </script>
 <script>
 
-  let params = (new URL(document.location)).searchParams;
-  var product_type = params.get("pkey");
+  let params = (new URL(document.location)).searchParams; // get query string which stores form data
+  var product_type = params.get("pkey"); // asign to pkey to reference eerything in the files
 
   window.onload = function () {
     if (typeof cart_data[product_type] != "undefined") {
@@ -34,8 +37,7 @@
     return return_errors ? errors : (errors.length == 0);
   }
 
-  
-
+  // get cookies referenced friend: Tyler Johnson
   function getCookie(name = '') {
     let cookies = document.cookie;
     let cookiestore = {};
@@ -55,7 +57,7 @@
     return (name !=='' ? cookiestore[name] : cookiestore);
   }
   
-  
+  //assigns items from cart to variables to send to server
   function savetocart (index) {
     var productdata = {};
     productdata.product_type = product_type;
@@ -239,10 +241,7 @@
       <hr id="shipping">
       <footer class="w3-row-padding w3-padding-32">
         <!-- Describe the shipping policy of the store-->
-        <div class="w3-row-padding w3-padding-16 w3-center" id="shipping"></div>
-        <h3>Shipping Policy</h3>
-        <p>OUR SHIPPING POLICY IS: A subtotal of $0 - 99.99 will be $5 shipping, subtotal of $100 - $199.99 will be $5
-          shipping, and over $200 will be charged 4% of the subtotal amount. </p>
+        
       </footer>
 
 

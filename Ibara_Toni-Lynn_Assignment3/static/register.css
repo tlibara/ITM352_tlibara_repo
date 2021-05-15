@@ -1,3 +1,5 @@
+/* Author: Toni-Lynn Ibara */
+/* Data: 5-14-2021 */
 /* General */  
 html, body{
     font-family: 'Karma', sans-serif;
@@ -11,13 +13,13 @@ html, body{
     margin-right: auto;
     width: 100%;
 }
-/* General */
-h3 {
+/* General*/
+h2 {
     text-align: center;
     font-size: 40px;
     font-weight: normal;
 }
-/* Form Styling*/
+/* Form styling */
 form {
     border: none;
     width: 70%;
@@ -25,11 +27,13 @@ form {
     align-items: center;
     margin: auto;
 }
-/* Alignment for the information */
-.containerlogin{
+/* Alignment for the information inputted */
+.registration{
     text-align: center;
     padding: 15px;
 }
-.containerregister {
+/* Alignment for the information inputted */
+.containerlogin {
     text-align: center;
 }
+

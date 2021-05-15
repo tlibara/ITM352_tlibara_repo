@@ -1,3 +1,5 @@
+/* Author: Toni-Lynn Ibara */
+/* Data: 5-14-2021 */
 /* General */  
 html, body{
     font-family: 'Karma', sans-serif;
@@ -15,15 +17,29 @@ html, body{
 /* General */  
 body{
     align-items: center;
-    columns:auto ;
+    columns:inherit;
 }
 /* Form Style*/
 form{
     margin: auto;
 }
-/* Styling the products display */ 
+div{
+    margin: auto;
+}
+/* Table styling */
+table {
+    display: table;
+    border-collapse: separate;
+    background-color: whitesmoke;
+    align-content: center;
+    border-color: black;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+/* Form styling */
 main{
-    text-align: center;
+    table-layout: auto;
     font-size: 30;
     margin: 0;
 }
@@ -38,11 +54,6 @@ p {
     padding: 50px;
     margin: 20px;
 }
-/* Image styling*/
-.item img {
-    width: 400px;
-    height: 400px;
-}
 /* Typography for shipping header*/ 
 h3 {
     font-size: 40px;
@@ -52,5 +63,3 @@ h3 {
 footer {
     text-align: center;
 }
-
-  

@@ -1,24 +1,49 @@
+<!-- Author: Toni-Lynn Ibara -->
+<!-- Date: 5-14-2021 -->
+<!-- Cart file -->
 <script src="./products_data.js" type="text/javascript">/* This is an invoice form for the products purchased*/
 </script>
-
 <script>
-  function loadJSON(service, callback) {   
+  // referenced code given in professor port lab 15 example
+  function loadJSON(service, callback) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
     xobj.open('POST', service, false);
     xobj.onreadystatechange = function () {
-          if (xobj.readyState == 4 && xobj.status == "200") {
-            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            callback(xobj.responseText);
-          }
+      if (xobj.readyState == 4 && xobj.status == "200") {
+        // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+        callback(xobj.responseText);
+      }
     };
-    xobj.send(null);  
- }
-  var cart_data ={};
+    xobj.send(null);
+  }
+  var cart_data = {};
   loadJSON('loadcart', function (res) {
     cart_data = JSON.parse(res);
+    //returns the cart data
   });
   console.log(cart_data);
+
+  // get cookies referenced from friend: Tyler Johnson
+  function getCookie(name = '') {
+    let cookies = document.cookie;
+    let cookiestore = {};
+
+    cookies = cookies.split(";");
+
+    if (cookies[0] == "" & cookies[0][0] == undefined) {
+      return undefined;
+    }
+    cookies.forEach(function(cookie) {
+      cookie = cookie.split(/=(.+)/);
+      if (cookie[0].substr(0, 1) == ' ') {
+        cookie[0] = cookie[0].substr(1);
+      }
+      cookiestore[cookie[0]] = cookie[1];
+    });
+    return (name !=='' ? cookiestore[name] : cookiestore);
+  }
+
 </script>
 
 <!DOCTYPE html>
@@ -48,26 +73,33 @@
 </style>
 
 <body>
-  <form>
+  <div>
 
     <!--Name of page and at the top of the page-->
     <header>
       <div style="text-align: center;">
-        <h1>TONI'S EYESHADOW STORE</h1>
+        <h1>TONI'S MAKEUP STORE</h1>
       </div>
     </header>
+
 
     <!-- Sidebar (hidden by default), it will also navigate throughout the page -->
     <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left"
       style="display:none;z-index:2;width:40%;min-width:300px" id="mySidebar">
       <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button">CLOSE MENU</a>
       <script>
-        for(let ptype in products){
-       document.write(`<a href="./productdisplay.html?pkey=${ptype}" onclick="w3_close()" class="w3-bar-item w3-button">${ptype}</a>`) 
-      }
+        for (let ptype in products) {
+          document.write(`<a href="./products_display.html?pkey=${ptype}" onclick="w3_close()" class="w3-bar-item w3-button">${ptype}</a>`)
+        }
       </script>
-      <a href="./login.html" onclick="w3_close()" class="w3-bar-item w3-button">LOGIN PAGE</a>
       <a href="./cart.html" onclick="w3_close()" class="w3-bar-item w3-button">SHOPPING CART</a>
+      <script>
+        if (getCookie('username') == undefined) {
+          document.write(`<a href="login.html" onclick="w3_close()" class="w3-bar-item w3-button">LOGIN</a>`);
+        } else {
+          document.write(`<a href="logout" onclick="w3_close()" class="w3-bar-item w3-button">LOGOUT ${getCookie('username')}</a>`)
+        }
+      </script>
     </nav>
 
     <!-- Top menu, includes the navigation sidebar to click on, describes the page, and thanks the customers -->
@@ -82,9 +114,13 @@
 
     <!-- !PAGE CONTENT! -->
     <main>
+      
+      <!--If the cookie is undefined show the register else show nothing-->
+      
       <!-- Table of the invoice, referenced WOD Invoice 4-->
-
-     
+    
+      <script>
+        invoicestr = `
       <table>
         <tbody>
           <tr>
@@ -93,78 +129,86 @@
             <th style="text-align: center;" width="13%">PRICE</th>
             <th style="text-align: center;" width="54%">EXTENDED PRICE</th>
           </tr>
-          <script>
-            subtotal = 0
+          `;
 
-            for (let ptype in cart_data) {
-              for (let i in cart_data[ptype]) {
-                let qty = cart_data[ptype][i];
-                if (qty > 0) {
-                  var extended_price = qty * products[ptype][i].price;
-                  subtotal += extended_price;
-                  document.write(`     
-      <tr>
-        <td align="center" width="43%">${products[ptype][i].name}</td>
-        <td align="center" width="11%">${qty}</td>
-        <td align="center" width="13%">\$${products[ptype][i].price}</td>
-        <td align="center" width="54%">\$${extended_price}</td>
-      </tr>
-    `);
-              }
+        subtotal = 0;
+        for (let ptype in cart_data) {
+          for (let i in cart_data[ptype]) {
+            let qty = cart_data[ptype][i];
+            if (qty > 0) {
+              var extended_price = qty * products[ptype][i].price;
+              subtotal += extended_price;
+              invoicestr += `
+        <tr>
+          <td align="center"width="43%">${products[ptype][i].name}</td>
+          <td align="center" width="11%">
+          <input type="number" onchange="cart_data"['${ptype}'][${i}]=this.value" name="qty[${i}]" value="${cart_data[ptype][i]}" min="0">
+          </td>
+          <td align="center"width="13%">\$${products[ptype][i].price}</td>
+          <td align="center"width="54%">\$${extended_price}</td>
+        </tr>
+        `;
             }
           }
+        }
 
-            // Referenced shipping from WOD Invoice 4, but rearranged values to fit my prices
-            // Compute sales tax
-            // Hawaii tax rate = 4.712%
-            var tax_rate = 0.04712;
-            var tax = tax_rate * subtotal;
 
-            // Compute shipping costs
-            if (subtotal <= 100) {
-              shipping = 5;
-            } else if (subtotal <= 200) {
-              shipping = 7;
-            } else { shipping = 0.04 * subtotal }
+        // Referenced shipping from WOD Invoice 4, but rearranged values to fit my prices
+        // Compute sales tax
+        // Hawaii tax rate = 4.712%
+        var tax_rate = 0.04712;
+        var tax = tax_rate * subtotal;
 
-            // Compute grand total
-            var total = subtotal + tax + shipping;
-          </script>
+        // Compute shipping costs
+        if (subtotal <= 100) {
+          shipping = 5;
+        } else if (subtotal <= 200) {
+          shipping = 7;
+        } else { shipping = 0.04 * subtotal }
 
+        // Compute grand total
+        var total = subtotal + tax + shipping;
+
+
+        invoicestr += `
           <tr>
             <td colspan="4" width="100%">&nbsp;</td>
           </tr>
           <tr>
             <td style="text-align: center;" colspan="3" width="67%">SUB-TOTAL</td>
             <td style="text-align: center;" colspan="3" width="54%">$
-              <script>
-                document.write(subtotal);
-              </script>
+              ${subtotal}
             </td>
           </tr>
           <tr>
             <td style="text-align: center;" colspan="3" width="67%">TAX @
-              <script>document.write(tax_rate.toFixed(4) * 100)</script>
+              ${100 * tax_rate.toFixed(4)}%
             </td>
             <td style="text-align: center;" colspan="3" width="54%">$
-              <script>document.write(tax.toFixed(2));</script>
+              ${tax.toFixed(2)}
             </td>
           </tr>
           <tr>
             <td style="text-align: center;" colspan="3" width="67%">SHIPPING</td>
             <td style="text-align: center;" colspan="3" width="54%">$
-              <script>document.write(shipping.toFixed(2));</script>
+              ${shipping.toFixed(2)}
             </td>
           </tr>
           <tr>
             <td style="text-align: center;" colspan="3" width="67%"><strong>TOTAL</strong></td>
             <td style="text-align: center;" colspan="3" width="54%"><span style="font-family: arial;"><strong>$
-                  <script>document.write(total.toFixed(2));</script>
+                  ${total.toFixed(2)}
                 </strong></span></td>
           </tr>
         </tbody>
       </table>
+      `;
+      // write variable
+        document.write(invoicestr);
+      </script>
 
+
+      
     </main>
     <!-- Footer -->
     <hr id="shipping">
@@ -176,8 +220,15 @@
       <p>OUR SHIPPING POLICY IS: A subtotal of $0 - 99.99 will be $5 shipping, subtotal of $100 - $199.99 will be $5
         shipping, and over $200 will be charged 4% of the subtotal amount. </p>
     </footer>
-
-
+<!-- Send to server from it being stored in "invoicestr"-->
+    <form action="/checkout" method="POST">
+      <script>
+        document.write(`<input name="invoicestring" type="hidden" value="${encodeURI(invoicestr)}">`);
+      </script>
+      <div class="w3-main w3-content w3-padding" style="text-align: center;">
+        <button type="submit" name="purchasesubmit">Checkout!</button>
+    </form>
+    
 
     <!-- End page content -->
     </div>
@@ -192,7 +243,13 @@
         document.getElementById("mySidebar").style.display = "none";
       }
     </script>
-  </form>
+    
+    
+
+    
+   
+  </div>
+
 </body>
 
 </html>
