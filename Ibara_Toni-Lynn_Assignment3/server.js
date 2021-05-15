@@ -222,18 +222,18 @@ app.post('/process_register', function (req, res) {
 
 // referenced from friend
 app.post("/checkout", function (req, res) {
-    invoice_str = decodeURI(req.body.invoicestring);
+    var user = req.cookies['username'];
+    var invoice_str = decodeURI(req.body.invoicestring);
     var transporter = nodemailer.createTransport({
-        host: "mail.hawaii.edu",
-        port: 25,
-        secure: false,
-        tls: {
-            rejectUnauthorized: false
+        service: 'gmail',
+        auth: {
+            user: 'makeupstoretoni@gmail.com',
+            pass: 'tonimakeup'
         }
     });
-    var user_email = filename["email"];
+    var user_email = user_data[user].email;
     var mailOptions = {
-        from: 'tlibara@hawaii.edu',
+        from: 'makeupstoretoni@gmail.com',
         to: user_email,
         subject: 'INVOICE',
         html: invoice_str
